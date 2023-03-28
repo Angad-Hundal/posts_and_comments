@@ -14,6 +14,7 @@ const HOST = '0.0.0.0';
 const NodeCouchDb = require('node-couchdb');
 
 
+
 // node-couchdb instance with default options
 const couch = new NodeCouchDb({
   auth: {
@@ -27,6 +28,7 @@ const couch = new NodeCouchDb({
 app.get('/', (req, res) => {
   res.redirect("/TestRestLevel2.html");
 })
+
 
 
 
@@ -71,6 +73,34 @@ app.post('/addPost', (req, res) => {
   });
 });
 
+
+
+
+
+// Get all posts from the "posts" database
+app.get('/getPosts', (req, res) => {
+  couch.get('posts', '_all_docs', {include_docs: true}).then(result => {
+
+    console.log("RESULT:", result);
+
+    const rows = result["data"]["rows"];
+    console.log("ROWS", rows);
+
+    const posts = rows.map(row => {
+      console.log(row["doc"]);
+      return row["doc"];
+    });
+
+    console.log("POSTS: ", posts);
+
+    res.json(posts);
+
+  }).catch(err => {
+    console.error('Failed to get posts from database:', err);
+    res.status(500).send('Failed to get posts from database');
+  });
+
+});
 
 
 

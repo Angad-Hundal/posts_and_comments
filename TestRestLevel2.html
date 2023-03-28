@@ -35,15 +35,15 @@
 
 
 
-            // function read() {
-            //     fetch('/getPosts', {
-            //         method: 'GET'
-            //     })
-            //     .then(response => response.json())
-            //     .then(data => {document.getElementById("output").value =
-            //     JSON.stringify(data)})
-            //     .catch(error => console.error(error)) 
-            // }
+            function read() {
+                fetch('/getPosts', {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then(data => {document.getElementById("output").value =
+                JSON.stringify(data)})
+                .catch(error => console.error(error)) 
+            }
 
 
 
@@ -60,10 +60,10 @@
     <br></br>
 
 
-    <!-- <button onclick="read()"> GET POSTS </button>
+    <button onclick="read()"> GET POSTS </button>
 
 
-    <textarea id="output" rows="20" cols="100"> </textarea> -->
+    <textarea id="output" rows="20" cols="100"> </textarea>
 
 
 
