@@ -30,8 +30,6 @@ app.get('/', (req, res) => {
 })
 
 
-
-
 // Test the connection to CouchDB by listing all databases
 couch.listDatabases().then(dbs => {
   console.log(`Connected to CouchDB, found ${dbs.length} databases`);
@@ -81,17 +79,17 @@ app.post('/addPost', (req, res) => {
 app.get('/getPosts', (req, res) => {
   couch.get('posts', '_all_docs', {include_docs: true}).then(result => {
 
-    console.log("RESULT:", result);
+    //console.log("RESULT:", result);
 
     const rows = result["data"]["rows"];
-    console.log("ROWS", rows);
+    //console.log("ROWS", rows);
 
     const posts = rows.map(row => {
-      console.log(row["doc"]);
+      //console.log(row["doc"]);
       return row["doc"];
     });
 
-    console.log("POSTS: ", posts);
+    //console.log("POSTS: ", posts);
 
     res.json(posts);
 
@@ -101,6 +99,49 @@ app.get('/getPosts', (req, res) => {
   });
 
 });
+
+
+
+
+// POST request to add a comment to a post
+app.post('/addComment', (req, res) => {
+
+  const postID = req.body.PostID;
+  console.log("postID:", postID);
+  const commentText = req.body.CommentText;
+  console.log("commentText:", commentText);
+
+  // generate an ID for the new comment
+  const commentID = Date.now().toString();
+
+  // create the new comment object
+  const comment = {
+    _id: commentID,
+    postID: postID,
+    commentText: commentText
+  };
+
+  // retrieve the post from the "posts" database
+  couch.get('posts', postID).then(({data, headers, status}) => {
+
+    const post = data;
+
+    // add the comment to the post's comments array
+    post.comments.push(comment);
+
+    // update the post document in the "posts" database
+    return couch.update('posts', post).then(({data, headers, status}) => {
+      res.status(201).send(`Comment created with ID: ${commentID}`);
+    }, err => {
+      res.status(500).send(err);
+    });
+
+  }, err => {
+    res.status(500).send(err);
+  });
+
+});
+
 
 
 

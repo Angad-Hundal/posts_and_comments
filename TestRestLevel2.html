@@ -40,10 +40,30 @@
                     method: 'GET'
                 })
                 .then(response => response.json())
-                .then(data => {document.getElementById("output").value =
-                JSON.stringify(data)})
+                .then(data => {document.getElementById("output").value = JSON.stringify(data)})
                 .catch(error => console.error(error)) 
             }
+
+
+
+            function addComment() {
+
+                console.log("Sending...");
+                console.log(document.getElementById("postid_comment").value);
+
+                fetch('/addComment', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        CommentText: document.getElementById("comment_input").value,
+                        PostID: document.getElementById("postid_comment").value
+                    }).toString(),
+                    headers: {"Content-type": "application/x-www-form-urlencoded"}
+                })
+                .then(response => response.json())
+                .then(fname => console.log(fname))
+                .catch(error => console.log(error))
+                alert("New Comment inserted");
+             }
 
 
 
@@ -60,8 +80,18 @@
     <br></br>
 
 
+
     <button onclick="read()"> GET POSTS </button>
 
+
+
+    <label> Add a comment: </label>
+    <input id="comment_input" type="text" name="comment" value="enter the comment here">  </input> <br></br>
+
+    <label> PostID for which comment has to be added: </label>
+    <input id="postid_comment" type="text" name="postId_comment" value="enter the PostID here">  </input> <br></br>
+
+    <button onclick="addComment()"> ADD COMMENT </button>
 
     <textarea id="output" rows="20" cols="100"> </textarea>
 
