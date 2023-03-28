@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <title> Posts </title>
+
+</head>
+
+
+<body>
+    
+    <script type = "text/javascript">
+
+
+
+            function send() {
+
+                console.log("Sending...");
+
+                fetch('/addPost', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        topic: document.getElementById("topic_input").value,
+                        postData: document.getElementById("data_input").value
+                    }).toString(),
+                    headers: {"Content-type": "application/x-www-form-urlencoded"}
+                })
+                .then(response => response.json())
+                .then(fname => console.log(fname))
+                .catch(error => console.error(error))
+                alert("New employee inserted");
+            }
+
+
+
+            // function read() {
+            //     fetch('/getPosts', {
+            //         method: 'GET'
+            //     })
+            //     .then(response => response.json())
+            //     .then(data => {document.getElementById("output").value =
+            //     JSON.stringify(data)})
+            //     .catch(error => console.error(error)) 
+            // }
+
+
+
+    </script>
+
+
+    <label for="topic"> TOPIC: </label> 
+    <input id="topic_input" type="text" name="topic" value="enter the topic here">  </input> <br></br>
+
+    <label for="data"> DATA: </label>
+    <input id="data_input" type="text" name="data" value="enter the data here">  </input> <br></br>
+
+    <button onclick="send()"> SUBMIT </button>
+    <br></br>
+
+
+    <!-- <button onclick="read()"> GET POSTS </button>
+
+
+    <textarea id="output" rows="20" cols="100"> </textarea> -->
+
+
+
+
+</body>
+
+</html>

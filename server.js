@@ -23,80 +23,57 @@ const couch = new NodeCouchDb({
 });
 
 
+// direct it to given page
+app.get('/', (req, res) => {
+  res.redirect("/TestRestLevel2.html");
+})
+
+
 
 // Test the connection to CouchDB by listing all databases
 couch.listDatabases().then(dbs => {
   console.log(`Connected to CouchDB, found ${dbs.length} databases`);
-}).catch(err => {
+  
+  // create database "posts" if it doesn't already exist
+  if (!dbs.includes('posts')) {
+  return couch.createDatabase('posts');
+  }
+  }).then(() => {
+  console.log('Database "posts" ready to use');
+  }).catch(err => {
   console.error('Failed to connect to CouchDB:', err);
+  });
+
+
+
+// POST request to create a post
+app.post('/addPost', (req, res) => {
+
+  const topic = req.body.topic;
+  const postData = req.body.postData;
+
+  // generate an ID for the new post
+  const postID = Date.now().toString();
+
+  // create the new post document
+  const post = {
+    _id: postID,
+    topic: topic,
+    postData: postData,
+    comments: []
+  };
+
+  // insert the new post document into the "posts" database
+  couch.insert('posts', post).then(({ data, headers, status }) => {
+    res.status(201).send(`Post created with ID: ${postID}`);
+  }, err => {
+    res.status(500).send(err);
+  });
 });
 
 
-//load couchdb
-// var nano = require('nano')('http://admin:12345@host:5984');
-
-// var nano = require('nano')('http://localhost:5984');
-
-// var posts = nano.use('posts');
 
 
-// Get a list of all documents in the database
-// posts.list((err, body) => {
-
-//     if (err) {
-//       console.log(err)
-//     } else {
-//       console.log(body.rows)
-//     }
-    
-//   })
-
-
-
-// app.get('/test', function (req, res) {
-
-// 	posts.list({ include_docs: true }, function(err, body){
-//         if (!err) {
-//             body.rows.forEach(function(doc) {
-//                 res.send(body);
-//             });
-//         }
-// 	});
-
-// });
-
-
-// //lists all the posts
-// app.get('/getposts', function (req, res) {
-
-//   posts.list({ include_docs: true },function(err, body) {
-//     if (!err) {
-//         //res.send(body)
-//         body.rows.forEach(function(doc) {
-//             res.send(doc);
-//         });
-//    }
-
-//   });
-// });
-
-
-// //add a new post
-// app.post('/addposts', function (req, res) {
-
-//     var topic = req.body.topic;
-//     var data = req.body.data;
-
-//     posts.insert({topic, data}, function(err, body, header) {
-//         if (err) {
-//             console.log(err)
-//         }
-//         else {
-//             res.send(body);
-//         }
-//     });
-// });
-
-
+app.use('/', express.static(__dirname));
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
