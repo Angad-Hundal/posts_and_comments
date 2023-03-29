@@ -144,6 +144,28 @@ app.post('/addComment', (req, res) => {
 
 
 
+// GET request to retrieve all comments for a post
+app.get('/getComments/:postID', (req, res) => {
+
+    const postID = req.params.postID;
+  
+    // retrieve the post from the "posts" database
+    couch.get('posts', postID).then(({data, headers, status}) => {
+  
+      const post = data;
+  
+      // retrieve the comments array from the post document
+      const comments = post.comments;
+  
+      res.json(comments);
+  
+    }, err => {
+      res.status(500).send(err);
+    });
+  
+  });
+
+
 
 app.use('/', express.static(__dirname));
 app.listen(PORT, HOST);

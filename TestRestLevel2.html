@@ -45,6 +45,16 @@
             }
 
 
+            function comment() {
+                console.log("GETTING COMMENTS...");
+                postID = document.getElementById("allcomments").value
+                fetch(`/getComments/${postID}`)
+                .then(response => response.json())
+                .then(data => {document.getElementById("comment_output").value = JSON.stringify(data)})
+                .catch(error => console.error(error)) 
+            }
+
+
 
             function addComment() {
 
@@ -81,19 +91,29 @@
 
 
 
-    <button onclick="read()"> GET POSTS </button>
-
-
-
     <label> Add a comment: </label>
     <input id="comment_input" type="text" name="comment" value="enter the comment here">  </input> <br></br>
 
     <label> PostID for which comment has to be added: </label>
     <input id="postid_comment" type="text" name="postId_comment" value="enter the PostID here">  </input> <br></br>
 
-    <button onclick="addComment()"> ADD COMMENT </button>
+    <button onclick="addComment()"> ADD COMMENT </button>  <br></br>
 
-    <textarea id="output" rows="20" cols="100"> </textarea>
+    <textarea id="output" rows="20" cols="100"> </textarea>  <br></br>
+
+    <button onclick="read()"> GET POSTS </button>  <br></br>
+
+
+
+    <label> Get comments for POSTID: </label>
+    <input id="allcomments" type="text" name="allcommentst" value="enter the PostID here">  </input> <br></br>
+    <button onclick="comment()"> GET COMMENTS </button>  <br></br>
+
+
+    <textarea id="comment_output" rows="20" cols="100"> </textarea>  <br></br>
+
+
+    <p> SUGGESTION: The post ID to be used for comment can be found from the GET POSTS button retrived information. </p>
 
 
 
