@@ -26,7 +26,7 @@ const couch = new NodeCouchDb({
 
 // direct it to given page
 app.get('/', (req, res) => {
-  res.redirect("/TestRestLevel2.html");
+  res.redirect("/TestRestLevel3.html");
 })
 
 
@@ -60,7 +60,8 @@ app.post('/addPost', (req, res) => {
     _id: postID,
     topic: topic,
     postData: postData,
-    comments: []
+    comments: [],
+    getPost: `/getPost/${postID}`
   };
 
   // insert the new post document into the "posts" database
