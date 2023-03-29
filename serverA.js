@@ -169,6 +169,23 @@ app.get('/getComments/:postID', (req, res) => {
 
 
 
+
+// Get a specific post by ID from the "posts" database
+app.get('/getPost/:postID', (req, res) => {
+  const postID = req.params.postID;
+
+  couch.get('posts', postID).then(({data, headers, status}) => {
+    
+    res.json(data);
+  }, err => {
+    console.error(`Failed to get post with ID ${postID} from database:`, err);
+    res.status(500).send(`Failed to get post with ID ${postID} from database`);
+  });
+
+});
+
+
+
 app.use('/', express.static(__dirname));
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);

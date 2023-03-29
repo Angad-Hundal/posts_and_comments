@@ -56,6 +56,17 @@
 
 
 
+            function getPost() {
+                console.log("GETTING POST...");
+                postID = document.getElementById("id_post").value
+                fetch(`/getPost/${postID}`)
+                .then(response => response.json())
+                .then(data => {document.getElementById("single_post").value = JSON.stringify(data)})
+                .catch(error => console.error(error)) 
+            }
+
+
+
             function addComment() {
 
                 console.log("Sending...");
@@ -111,6 +122,15 @@
 
 
     <textarea id="comment_output" rows="20" cols="100"> </textarea>  <br></br>
+
+
+
+    <label> Get Post with POSTID: </label>
+    <input id="id_post" type="text" name="id_post" value="enter the PostID here">  </input> <br></br>
+    <button onclick="getPost()"> GET THE POST </button>  <br></br>
+
+
+    <textarea id="single_post" rows="20" cols="100"> </textarea>  <br></br>
 
 
     <p> SUGGESTION: The post ID to be used for comment can be found from the GET POSTS button retrived information. </p>

@@ -111,6 +111,7 @@ app.post('/addComment', (req, res) => {
   const commentText = req.body.CommentText;
   console.log("commentText:", commentText);
 
+
   // generate an ID for the new comment
   const commentID = Date.now().toString();
 
@@ -118,7 +119,8 @@ app.post('/addComment', (req, res) => {
   const comment = {
     _id: commentID,
     postID: postID,
-    commentText: commentText
+    commentText: commentText,
+    getComment: `/getComments/${postID}`      // link to the comment getter
   };
 
   // retrieve the post from the "posts" database
@@ -147,24 +149,40 @@ app.post('/addComment', (req, res) => {
 // GET request to retrieve all comments for a post
 app.get('/getComments/:postID', (req, res) => {
 
-    const postID = req.params.postID;
-  
-    // retrieve the post from the "posts" database
-    couch.get('posts', postID).then(({data, headers, status}) => {
-  
-      const post = data;
-  
-      // retrieve the comments array from the post document
-      const comments = post.comments;
-  
-      res.json(comments);
-  
-    }, err => {
-      res.status(500).send(err);
-    });
-  
+  console.log("REACHED GET COMMENTS")
+  const postID = req.params.postID;
+  console.log("postID:", postID);
+
+  // retrieve the post from the "posts" database
+  couch.get('posts', postID).then(({data, headers, status}) => {
+
+    const post = data;
+
+    // retrieve the comments array from the post document
+    const comments = post.comments;
+
+    res.json(comments);
+
+  }, err => {
+    res.status(500).send(err);
   });
 
+});
+
+
+
+// Get a specific post by ID from the "posts" database
+app.get('/getPost/:postID', (req, res) => {
+  const postID = req.params.postID;
+
+  couch.get('posts', postID).then(({data, headers, status}) => {
+    res.json(data);
+  }, err => {
+    console.error(`Failed to get post with ID ${postID} from database:`, err);
+    res.status(500).send(`Failed to get post with ID ${postID} from database`);
+  });
+
+});
 
 
 app.use('/', express.static(__dirname));
